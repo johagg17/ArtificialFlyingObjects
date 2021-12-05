@@ -18,6 +18,8 @@ class Model(pl.LightningModule):
         self.validation_metrics = validation_metrics
         self.test_metrics = test_metrics
         
+    
+        
     def forward(self, x):
         """
 
@@ -70,10 +72,12 @@ class Model(pl.LightningModule):
 
         loss = self.criterion(logits,target)
         preds = F.softmax(logits,dim=1)
+        #print(preds)
         
         if self.test_metrics != None: self.test_metrics(preds, target)
+        #print(self.test_metrics)
         self.log('loss_Test',loss)
-        self.log_dict(self._is_metrics_float(self.test_metrics.compute()))
+       # self.log_dict(self._is_metrics_float(self.test_metrics.compute()))
         return {'loss_Test':loss}
 
     def training_epoch_end(self, outputs):

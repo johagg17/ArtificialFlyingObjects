@@ -202,10 +202,10 @@ def stats_class(x:list=None, y:list=None, label:str='Training', model:"nn.Module
     sens = tp / nof_p 
     spec = tn / nof_n
     acc = (tp + tn) / (len(y))
-    #loss = "Not implemented"#model.test(x, y , batch_size =  x.shape[0], verbose=0)
+    #loss = model.test(x, y , batch_size =  x.shape[0], verbose=0) # "Not implemented"
                 
-    A = ['Accuracy', 'Sensitivity', 'Specificity']#, 'Loss']
-    B = [acc, sens, spec]#, loss]
+    A = ['Accuracy', 'Sensitivity', 'Specificity' ]#, 'Loss']
+    B = [acc, sens, spec] #, loss]
     
     print('\n','#'*10,'STATISTICS for {} Data'.format(label), '#'*10, '\n')
     for r in zip(A,B):
