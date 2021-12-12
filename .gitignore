@@ -155,7 +155,7 @@ dmypy.json
 
 *.ckpt
 *.txt
-logs
+#logs
 # End of https://www.toptal.com/developers/gitignore/api/python,jupyternotebooks
 # Created by .ignore support plugin (hsz.mobi)
 ### Python template
