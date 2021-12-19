@@ -52,6 +52,32 @@ class RandomHorizontalFlip(object):
             image = F.hflip(image)
             target = F.hflip(target)
         return image, target
+    
+    
+class RandomVerticalFlip(object):
+    def __init__(self, flip_prob):
+        self.flip_prob = flip_prob
+        
+    def __call__(self, image, target):
+        if random.random() < self.flip_prob:
+            image = F.vflip(image)
+            target = F.vflip(target)
+        return image, target
+
+class RandomGaussianBlur():
+    def __init__(self, flip_prob, kernel_size, sigma):
+        self.flip_prob = flip_prob
+        self.kernel_size = kernel_size
+        self.sigma = sigma
+    
+    def __call__(self, image, target):
+        gausianblurr = T.GaussianBlur(kernel_size = self.kernel_size, sigma = self.sigma)
+        
+        if random.random() < self.flip_prob:
+            image = gausianblurr(image)
+            target = gausianblurr(target)
+        
+        return image, target
 
 
 class RandomCrop(object):
@@ -103,3 +129,4 @@ class Resize(object):
         image = F.resize(image, self.shape, **self.kwargs)
         target = F.resize(target, self.shape, **self.kwargs)
         return image, target
+    
