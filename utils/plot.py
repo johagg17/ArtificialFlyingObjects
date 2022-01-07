@@ -378,6 +378,10 @@ class RNN():
         images = torch.stack(torch.split(X,channels,dim=1),dim=1)
         targets = torch.stack(torch.split(Y,channels,dim=1),dim=1)
         
+        
+       # print(targets.shape)
+       # print(images.shape)
+        
         batch_size= images.shape[0]
         width = images.shape[3]
         height = images.shape[4]
@@ -385,7 +389,11 @@ class RNN():
         # Merge input and target (B,C,W,H)
         image_with_targets = torch.cat(
             (images,targets),dim=1
-        ).view(batch_size*(sequence_len+1), channels,width,height).permute(0,2,3,1)
+        ).view(batch_size*(sequence_len+5), channels,width,height).permute(0,2,3,1)
+        
+        
+        
+       # print(image_with_targets.shape)
         
         # Apply label for each image/target in sequence
         labels = [
@@ -393,16 +401,30 @@ class RNN():
             for i in range(1,image_with_targets.shape[0]*(sequence_len+1))
         ]
         
+        #print(image_with_targets.shape[0])
+        
+        serie = 1
+        labels= []
+        num_targets = 5
+        for i in range(1, image_with_targets.shape[0] * (sequence_len + num_targets)):
+            if serie <= sequence_len:
+                labels.append(f"Serie {serie}")
+            else:
+                labels.append("Target")
+            
+            serie = 1 if serie == sequence_len + num_targets else serie + 1
+        image_with_targets = image_with_targets.detach().numpy()
         image_with_labels(
             image_with_targets, 
             labels=labels,
             label_prefix="",
             title=title, 
             nrows=nrows, 
-            nimages=(sequence_len+1)*nrows, 
+            nimages=(sequence_len+5)*nrows, 
             fig_dimension=0.8,
             **plot_kwargs
         )
+       
         
     @staticmethod
     def results(
@@ -444,12 +466,15 @@ class RNN():
         width = X.shape[3]
         height = X.shape[4]
         sequence_len = X.shape[1]
+        print("X shape", X.shape)
+        print("X and Y concat shape", torch.cat([X,Y],1).shape)
+        print("Y shape", Y.shape)
    
         mask =  torch.cat([X,Y],1) - Y
         mask[mask <= 0] = 0
         mask = mask.view(batch_size*(sequence_len+1), channels,width,height)
         image_mask = (255*torch.cat([X, Y],1).view(
-            batch_size*(sequence_len+1), channels,width,height
+            batch_size*(sequence_len+5), channels,width,height
         )).type(torch.uint8)
 
         diff = []
@@ -472,11 +497,21 @@ class RNN():
             "Target" if i%(sequence_len+1) == 0 and i != 0 else f"Serie {i%(sequence_len+1)}" 
             for i in range(1,diff.shape[0])
         ]
+        serie = 1
+        labels= []
+        num_targets = 5
+        for i in range(1, image_with_targets.shape[0]):
+            if serie <= sequence_len:
+                labels.append(f"Serie {serie}")
+            else:
+                labels.append("Target")
+            
+            serie = 1 if serie == sequence_len + num_targets else serie + 1
         image_with_labels(
             diff, 
             labels=labels,
             label_prefix="",
-            nimages=(sequence_len+1)*nrows,
+            nimages=(sequence_len+5)*nrows,
             nrows=nrows,
             title="Diff (orange color) inputs with target",
             **plot_kwargs

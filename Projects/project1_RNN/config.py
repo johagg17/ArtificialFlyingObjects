@@ -7,4 +7,4 @@ class LabConfig(Config):
     validation_img_dir = "../../data/FlyingObjectDataset_10K/validation/image"
     testing_img_dir = "../../data/FlyingObjectDataset_10K/testing/image"
     
-    SEQUENCE_LENGTH = 7
+    SEQUENCE_LENGTH = 5

@@ -291,10 +291,17 @@ class FutureFramePredictorDataset(VisionDataset):
 
     def __getitem__(self, index):
         # Take last image in sequence as target and rest as sequence
-        seq, target = (self.images[index][:self.sequence_length], self.images[index][self.sequence_length:])
-      
+        #seq, target = (self.images[index][:self.sequence_length], self.images[index][self.sequence_length:]) # Modified
+        
+        
+        seq, target = (self.images[index][:self.sequence_length], self.images[index][self.sequence_length:]) # Change this
+       
+       # print("len of in seq: {}".format(len(seq)))
+       # print("len of target: {}".format(len(target)))
         # Concatenate over channel and transform images
         seque, label = self.transforms(self._to_series(seq),self._to_series(target))
+        
+       
    
         return seque, label
     
@@ -321,9 +328,11 @@ class FutureFramePredictorDataset(VisionDataset):
 
         last_action_id = None
         last_image_id = None
+    
         for image in images:
             _, img_name = os.path.split(image)
             action_id, class_id, color_id, frame_id  = img_name.split(".")[0].split("_")
+         
             
             # Ensure that last_action_id is not None
             if last_action_id == None:
@@ -333,13 +342,13 @@ class FutureFramePredictorDataset(VisionDataset):
                 
             # We want to break the sequence if we start a new image series!
             # Observe that the sequence must be 7 so all sequences below are removed.
-            
             sequence_batch.append(last_image_id)
 
             # Append and start a new sequence if sequence is full: self.sequence_length inputs + 1 target 
-            if (len(sequence_batch) > self.sequence_length):# or (not action_id == last_action_id and last_action_id != None):
+            if (len(sequence_batch) > self.sequence_length + 4):# Change this ...
                 sequence.append(sequence_batch)
                 sequence_batch = []
+                
             
             # Last image in sequence is added. Reset batch if new action_id starts
             if action_id != last_action_id:
@@ -348,6 +357,7 @@ class FutureFramePredictorDataset(VisionDataset):
             last_action_id = action_id
             last_image_id = img_name
             
+          
         #sequence_batch.append(last_image_id)  
         return sequence
     

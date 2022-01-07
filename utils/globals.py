@@ -13,8 +13,8 @@ class Config:
     
     SEED = 420
     GPU =0                 # GPU ID or set as -1 in case of using any GPU
-    IMAGE_WIDTH = 128       # image width
-    IMAGE_HEIGHT = 128      # image height
+    IMAGE_WIDTH = 32       # image width
+    IMAGE_HEIGHT = 32      # image height
     IMAGE_CHANNEL = 3       # image channel
     NUM_WORKERS = 4
     BATCH_SIZE = 32         # batch size
